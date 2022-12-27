@@ -24,6 +24,7 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
+    "gulp-htmlmin": "^5.0.1",
     "waveform-data": "^4.3.0"
   }
 }

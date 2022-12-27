@@ -21,18 +21,27 @@ function init() {
   initStartAudioAction();
 }
 
+function loadAudioFile(fileObj, callback)
+{
+  let type = fileObj.type;
+  if (type.indexOf("audio") == -1) {
+    window.alert(`${fileObj.name} is no audio file`);
+    return;
+  }
+  const fileReader = new FileReader();
+  fileReader.onload = () => {
+    if (callback) {
+      callback(fileReader.result, fileObj.name);
+    }
+  }
+  fileReader.readAsArrayBuffer(fileObj);
+}
 
 function initAudioAddAction(callback) {
   var elem = GetElem("audioFile");
   elem.onchange = function() {
     let audioFile = elem.files[0];
-    const fileReader = new FileReader();
-    fileReader.onload = () => {
-      if (callback) {
-        callback(fileReader.result, audioFile.name);
-      }
-    }
-    fileReader.readAsArrayBuffer(audioFile);
+    loadAudioFile(audioFile, callback);
   }
 }
 
@@ -58,6 +67,24 @@ function initView(id) {
   var elem = GetElem(id);
   elem.setAttribute("width", width);
   elem.setAttribute("height", height);
+  elem.addEventListener('dragover', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    return false;
+  });
+  elem.addEventListener('dragleave', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    return false;
+  });
+  elem.addEventListener('drop', (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const fileReader = new FileReader();
+    var audioFile = e.dataTransfer.files[0];
+    loadAudioFile(audioFile, onAddEvent);
+    return false;
+  });
   view.Init();
 }
 
@@ -89,9 +116,10 @@ function initWindowEvent() {
 }
 
 function onAddEvent(array, name) {
+  
   player.AddSound(array, name).then((num) => {
     console.log(num);
   }).catch(err => {
-    console.log(err);
+    window.alert(err);
   });
 }

@@ -7,7 +7,7 @@ const htmlmin = require('gulp-htmlmin');
 gulp.task('js' , async () => {
   gulp.src([
         'node_modules/waveform-data/dist/waveform-data.min.js',
-        'src/Import.js',
+        'src/Constants.js',
         'src/Element.js',
         'src/Button.js',
         'src/ImgButton.js',
