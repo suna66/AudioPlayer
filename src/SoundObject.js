@@ -8,10 +8,17 @@ class SoundObject {
     this.x = 0;
     this.y = 0;
     this.visible = false;
-    this.playback = false;
-    this.source = null;
     this.name = name;
     this.color_id = GetRandomInt(COLOR_DEFINE.length); 
+  }
+
+  Clean() {
+    this.audioBuffer = null;
+    this.wave = null;
+    this.svg = null;
+    this.visible = false;
+    this.name = null;
+    this.color_id = null;
   }
 
   copyAudioBuffer(audioBuffer) {
@@ -69,8 +76,6 @@ class SoundObject {
   }
 
   Size(bpm, widthParMeasure){
-    //let secParMeasure = (60/bpm)*4;
-    //let secParPixel = secParMeasure/widthParMeasure;
     let secParPixel = GetSecParPixel(bpm, widthParMeasure);
     let duration = this.audioBuffer.duration;
 
@@ -93,23 +98,33 @@ class SoundObject {
       return false;
     });
   }
+}
 
-  Play = (context, destination, bpm, widthParMeasure, offset) => {
+class PlayObject {
+  constructor(soundObject) {
+    this.soundObject = soundObject;
+    this.source = null;
+    this.playback = false;
+  }
+
+  Init(context, destination) {
     this.source = context.createBufferSource();
-    this.source.buffer = this.audioBuffer;
+    this.source.buffer = this.soundObject.audioBuffer;
     this.source.connect(destination);
     this.source.onended = () => {
       this.playback = false;
     }
+  }
 
+  Play = (context, bpm, widthParMeasure, offset) => {
     let isPlay = true;
     let _offset = 0;
-    let startTime = GetSecFromWorldPos(bpm, widthParMeasure, this.x);
+    let startTime = GetSecFromWorldPos(bpm, widthParMeasure, this.soundObject.x);
     if (offset <= startTime) {
       startTime -= offset;
       _offset = 0;
     }
-    else if (startTime < offset && (startTime + this.audioBuffer.duration) > offset) {
+    else if (startTime < offset && (startTime + this.soundObject.audioBuffer.duration) > offset) {
       _offset = offset - startTime;
       startTime = 0;
     }
@@ -129,6 +144,7 @@ class SoundObject {
     if (this.playback) {
       this.source.stop();
     }
+    this.soundObject = null;
     this.playback = false;
     this.source = null;
   }
@@ -137,16 +153,14 @@ class SoundObject {
 class SoundObjectManager {
   constructor() {
     this.objectList = null;
+    this.playList = null;
     this.drag = {
       isMouseDown: false,
       targets : null,
-      //target: null,
-      //offsetx: 0,
-      //offsety: 0,
     };
-    //this.selected = null;
     this.bpm = 120;
     this.widthParMeasure = 120;
+    this.indexNumber = 0;
   }
 
   GetListSize() {
@@ -180,7 +194,7 @@ class SoundObjectManager {
           this.drag.targets.map((obj) => {
             obj.target.SetSelected(false);
           });
-          this.clearDragList();
+          this.ClearDragList();
         }
         this.drag.targets = [];
         let target = {
@@ -190,32 +204,18 @@ class SoundObjectManager {
         };
         obj.SetSelected(true);
         this.drag.targets.push(target);
-        /*
-        this.drag.offsetx = e.clientX - rect.left;
-        this.drag.offsety = e.clientY - rect.top;
-        this.drag.isMouseDown = true;
-        this.drag.target = obj;
-        if (this.selected) {
-          this.selected.SetSelected(false);
-        }
-        obj.SetSelected(true);
-        this.selected = obj;
-        */
       }
     }
   }
 
-  clearDragList() {
+  ClearDragList() {
     if (this.drag.targets != null) {
       this.drag.targets = null;
     }
   }
 
   OnMouseUp() {
-    //this.drag.target = null;
     this.drag.isMouseDown = false;
-    //this.drag.offsetx = 0;
-    //this.drag.offsety = 0;
   }
 
   AddSound(webAudio, array, name) {
@@ -224,7 +224,8 @@ class SoundObjectManager {
         let audioObject = new SoundObject(name);
         audioObject.Load(webAudio, audio).then(() => {
           if (this.objectList == null) this.objectList = [];
-          let indexNo = this.objectList.length;
+          //let indexNo = this.objectList.length;
+          let indexNo = this.indexNumber++;
           audioObject.SetIndex(indexNo);
           audioObject.CreateSVG();
           audioObject.Size(this.bpm, this.widthParMeasure);
@@ -240,17 +241,23 @@ class SoundObjectManager {
     });
   }
 
+/*
   SetSoundPosition(idx, x, y) {
-    console.log(idx);
     let obj = this.objectList[idx];
     obj.Translate(x, y);
   }
+*/
 
   AudioPlay(webAudio, offset) {
     const play = (offset) => {
       if (this.objectList != null) {
+        this.playList = [];
         this.objectList.map(async (obj) => {
-          obj.Play(webAudio.context, webAudio.mainGain, this.bpm, this.widthParMeasure, offset);
+           var playObj = new PlayObject(obj);
+           playObj.Init(webAudio.context, webAudio.mainGain);
+           playObj.Play(webAudio.context, this.bpm, this.widthParMeasure, offset)
+           this.playList.push(playObj);
+          //obj.Play(webAudio.context, webAudio.mainGain, this.bpm, this.widthParMeasure, offset);
         });
       }
     }
@@ -258,15 +265,56 @@ class SoundObjectManager {
   }
 
   AudioStop() {
-    if (this.objectList != null) {
-      this.objectList.map(async (obj) => {
+    if (this.playList != null) {
+      this.playList.map((obj) => {
         obj.Stop();
       });
+      this.playList = null;
+    }
+  }
+
+  DeleteAudio(id) {
+    if (this.objectList != null) {
+      var idx = this.GetPlayListIndex(id);
+      if (idx != -1) {
+        var playObj = this.playList[idx];
+        playObj.Stop();
+        this.playList.splice(idx, 1);
+      }
+      idx = this.GetSoundListIndex(id);
+      if (idx != -1) {
+        var list = this.objectList.splice(idx, 1);
+        if (list != null) {
+          list[0].Clean();
+        }
+      }
     }
   }
 
   SetBpmMeaure(bpm, widthParMeasure) {
     this.bpm = bpm;
     this.widthParMeasure = widthParMeasure;
+  }
+
+  GetSoundListIndex(id) {
+    if (this.objectList == null) return -1;
+
+    for (let i =  0; i < this.objectList.length; i++) {
+      if (this.objectList[i].id == id) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  GetPlayListIndex(id) {
+    if (this.playList == null) return -1;
+
+    for (let i =  0; i < this.playList.length; i++) {
+      if (this.playList[i].soundObject.id == id) {
+        return i;
+      }
+    }
+    return -1;
   }
 }

@@ -55,14 +55,15 @@ class Player {
   AddSound(array, name) {
     return new Promise((resolve, reject) => {
       this.initAudio();
-      this.soundObjectManager.AddSound(this.webAudio, array, name).then((idx) => {
+      this.soundObjectManager.AddSound(this.webAudio, array, name).then((id) => {
         let x = GetRandomInt(100);
         let y = GetRandomInt(100);
-        this.view.SetSoundObjectPositionLocal(idx, x, y);
-        this.view.SetVisibleSoundObject(idx);
+        this.view.SetSoundObjectPositionLocal(id, x, y);
+        this.view.SetVisibleSoundObject(id);
 
         resolve(this.soundObjectManager.GetListSize());
       }).catch(err => {
+        
         reject(err);
       });
     });
@@ -113,7 +114,9 @@ class Player {
   }
 
   OnKeyDown(e) {
-
+    if (e.code == "Backspace") {
+      this.view.DeleteSelectedAudio();
+    }
   }
 
   setBpm(bpm) {

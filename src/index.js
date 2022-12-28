@@ -110,15 +110,15 @@ function initWindowEvent() {
     player.OnMouseMove(e);
   });
   document.addEventListener("keydown", (e) => {
-    //Keyboard Event
     player.OnKeyDown(e);
+    return false;
   });
 }
 
 function onAddEvent(array, name) {
   
   player.AddSound(array, name).then((num) => {
-    console.log(num);
+    //console.log(num);
   }).catch(err => {
     window.alert(err);
   });

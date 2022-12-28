@@ -111,7 +111,8 @@ class View {
     });
   }
 
-  SetVisibleSoundObject(idx) {
+  SetVisibleSoundObject(id) {
+    let idx = this.soundManager.GetSoundListIndex(id);
     let list = this.soundManager.GetObjectList();
     let obj = list[idx];
     let frame = GetElem(this.mainFrame);
@@ -119,7 +120,8 @@ class View {
     obj.visible = true;
   }
 
-  SetSoundObjectPositionLocal(idx, x, y) {
+  SetSoundObjectPositionLocal(id, x, y) {
+    let idx = this.soundManager.GetSoundListIndex(id);
     let list = this.soundManager.GetObjectList();
     let obj = list[idx];
 
@@ -305,6 +307,16 @@ class View {
       this.progress.isMouseDown = false;
       this.moveProgress(this.progress.worldPosition);
     }
+  }
+
+  DeleteSelectedAudio() {
+    let frame = GetElem(this.mainFrame);
+    let drag = this.soundManager.drag;
+    drag.targets.map((obj) => {
+      frame.removeChild(obj.target.svg);
+      this.soundManager.DeleteAudio(obj.target.id);
+    });
+    this.soundManager.ClearDragList();
   }
 
   LocalToWorldX(x) {
