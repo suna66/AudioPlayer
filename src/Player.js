@@ -20,6 +20,7 @@ class Player {
   Init() {
     this.view.SetBpmMeasure(this.bpm, this.widthParMeasure);
     this.view.SetSoundManager(this.soundObjectManager);
+    this.view.SetSeekCallback(this.seekCallback);
     this.soundObjectManager.SetBpmMeaure(this.bpm, this.widthParMeasure);
     this.bpmBox.Init();
     this.bpmBox.SetOnChangeEvent(this.ChangeBpm);
@@ -33,7 +34,7 @@ class Player {
     if (this.webAudio.context == null) {
       this.webAudio.context = new (window.AudioContext || window.webkitAudioContext)();
       this.webAudio.mainGain = this.webAudio.context.createGain();
-      this.webAudio.mainGain.gain.value = 0.3;
+      this.webAudio.mainGain.gain.value = DEFAULT_VOL;
       this.webAudio.mainGain.connect(this.webAudio.context.destination);
     }
   }
@@ -70,6 +71,9 @@ class Player {
   }
 
   updateProgress = () => {
+    if (this.playbackState != "play") {
+      return;
+    }
     let currentTime = this.webAudio.context.currentTime;
     let elapseTime = currentTime - this.startTime;
     let secParPixel = GetSecParPixel(this.bpm, this.widthParMeasure);
@@ -105,6 +109,24 @@ class Player {
     this.interval = null;
   }
 
+  Seek = () => {
+    if (this.playbackState != "seek") {
+      return;
+    }
+    this.progressPos = this.view.getWorldProgress();
+    let offset = GetSecFromWorldPos(this.bpm, this.widthParMeasure, this.progressPos);
+    this.soundObjectManager.AudioSeek(this.webAudio, offset);
+    this.startTime = this.webAudio.context.currentTime;
+    this.playbackState = "play";
+  }
+
+  seekCallback = () => {
+    if (this.playbackState == "play") {
+      this.playbackState = "seek"
+    }
+    this.Seek();
+  }
+
   OnMouseUp(e) {
     this.view.OnMouseUp(e);
   }
@@ -116,6 +138,14 @@ class Player {
   OnKeyDown(e) {
     if (e.code == "Backspace") {
       this.view.DeleteSelectedAudio();
+    }
+    if (e.code == "SPACE") {
+      var ev = new Event("click");
+      var elem = GetElem("startBtn");
+      elem.dispatchEvent(ev);
+    }
+    if (e.code == "Home") {
+      this.view.SetCamera(0, 0);
     }
   }
 

@@ -19,6 +19,7 @@ class View {
     }
     this.leftMoveBtn = null;
     this.rightMoveBtn = null;
+    this.seekCallback = null;
   }
 
   Init() {
@@ -286,6 +287,8 @@ class View {
     e.stopPropagation();
     this.progress.isMouseDown = true;
     this.progress.worldPosition = this.GetSnapPosition(this.camera.x + e.clientX);
+    if (this.seekCallback)
+      this.seekCallback();
     return false;
   }
 
@@ -302,6 +305,11 @@ class View {
   }
 
   OnMouseUp(e) {
+    let drag = this.soundManager.drag;
+    if (drag.isMouseDown) {
+      if (this.seekCallback)
+        this.seekCallback();
+    }
     this.soundManager.OnMouseUp();
     if (this.progress.isMouseDown) {
       this.progress.isMouseDown = false;
@@ -333,5 +341,9 @@ class View {
 
   WorldToLocalY(y) {
     return y - this.camera.y;
+  }
+
+  SetSeekCallback(callback) {
+    this.seekCallback = callback;
   }
 }

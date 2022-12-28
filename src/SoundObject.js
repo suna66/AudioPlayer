@@ -248,20 +248,34 @@ class SoundObjectManager {
   }
 */
 
-  AudioPlay(webAudio, offset) {
-    const play = (offset) => {
-      if (this.objectList != null) {
-        this.playList = [];
-        this.objectList.map(async (obj) => {
-           var playObj = new PlayObject(obj);
-           playObj.Init(webAudio.context, webAudio.mainGain);
-           playObj.Play(webAudio.context, this.bpm, this.widthParMeasure, offset)
-           this.playList.push(playObj);
-          //obj.Play(webAudio.context, webAudio.mainGain, this.bpm, this.widthParMeasure, offset);
-        });
-      }
+  play(webAudio, offset) {
+    if (this.objectList != null) {
+      this.objectList.map(async (obj) => {
+        var playObj = new PlayObject(obj);
+        playObj.Init(webAudio.context, webAudio.mainGain);
+        playObj.Play(webAudio.context, this.bpm, this.widthParMeasure, offset)
+        this.playList.push(playObj);
+      });
     }
-    play(offset);
+  }
+
+  AudioPlay(webAudio, offset) {
+    this.playList = [];
+    this.play(webAudio, offset);
+  }
+
+  AudioSeek(webAudio, offset) {
+    if (this.playList == null) {
+      this.playList = [];
+    }
+    let num = this.playList.length;
+    this.play(webAudio, offset);
+    for (let i = 0; i < num; i++) {
+      this.playList[i].Stop();
+    }
+    if (num > 0) {
+      this.playList.splice(0, num);
+    }
   }
 
   AudioStop() {
