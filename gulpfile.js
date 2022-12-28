@@ -7,6 +7,7 @@ const htmlmin = require('gulp-htmlmin');
 gulp.task('js' , (done) => {
   gulp.src([
         'node_modules/waveform-data/dist/waveform-data.min.js',
+        'src/audiobuffer-to-wav/audiobuffer-to-wav.min.js',
         'src/Constants.js',
         'src/Element.js',
         'src/Button.js',
@@ -16,6 +17,7 @@ gulp.task('js' , (done) => {
         'src/SelectBox.js',
         'src/View.js',
         'src/Player.js',
+        'src/Mixing.js',
         'src/index.js'
     ])
     .pipe(concat('bandle.js'))
@@ -28,6 +30,7 @@ gulp.task('js' , (done) => {
 gulp.task('debugjs' , (done) => {
   gulp.src([
         'node_modules/waveform-data/dist/waveform-data.min.js',
+        'src/audiobuffer-to-wav/audiobuffer-to-wav.min.js',
         'src/Constants.js',
         'src/Element.js',
         'src/Button.js',
@@ -37,6 +40,7 @@ gulp.task('debugjs' , (done) => {
         'src/SelectBox.js',
         'src/View.js',
         'src/Player.js',
+        'src/Mixing.js',
         'src/index.js'
     ])
     .pipe(gulp.dest('debug/'));

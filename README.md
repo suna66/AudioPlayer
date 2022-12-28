@@ -21,3 +21,9 @@ $npm start
 
 After above, open Chrome browser and access to ``http://localhost:8080``.
 
+## Rependncy
+
+- ![waveform-data.js](https://www.npmjs.com/package/waveform-data)
+- ![audiobuffer-to-wav](https://www.npmjs.com/package/audiobuffer-to-wav)
+
+

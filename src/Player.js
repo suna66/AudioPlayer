@@ -4,6 +4,7 @@ class Player {
     this.soundObjectManager = new SoundObjectManager();
     this.bpm = DEFAULT_BPM;
     this.widthParMeasure = DEFAULT_MEASURE_WIDTH;
+    this.volume = DEFAULT_VOL;
     this.playbackState = "stop";
     this.progressPos = 0;
     this.startTime = 0;
@@ -34,7 +35,7 @@ class Player {
     if (this.webAudio.context == null) {
       this.webAudio.context = new (window.AudioContext || window.webkitAudioContext)();
       this.webAudio.mainGain = this.webAudio.context.createGain();
-      this.webAudio.mainGain.gain.value = DEFAULT_VOL;
+      this.webAudio.mainGain.gain.value = this.volume;
       this.webAudio.mainGain.connect(this.webAudio.context.destination);
     }
   }
@@ -118,6 +119,25 @@ class Player {
     this.soundObjectManager.AudioSeek(this.webAudio, offset);
     this.startTime = this.webAudio.context.currentTime;
     this.playbackState = "play";
+  }
+
+  Mixing = (callback) => {
+    let mix = new Mixing();
+    try {
+      mix.Init(this.soundObjectManager.GetObjectList(), this.bpm, this.widthParMeasure, this.volume);
+      mix.Mixing((wav, err) => {
+        if (err) {
+          throw err;
+        }
+        mix.Download(wav);
+        mix.Close();
+        callback();
+      });
+    } catch (err) {
+     window.alert(err);
+     mix.Close();
+     callback();
+    }
   }
 
   seekCallback = () => {

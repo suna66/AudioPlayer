@@ -19,6 +19,7 @@ function init() {
   initWindowEvent();
   initAudioAddAction(onAddEvent);
   initStartAudioAction();
+  initMixAudioAction();
 }
 
 function loadAudioFile(fileObj, callback)
@@ -56,6 +57,21 @@ function initStartAudioAction() {
     else {
       elem.innerText = "START";
       player.Stop();
+    }
+  });
+}
+
+function initMixAudioAction() {
+  var elem = GetElem("mixBtn");
+  elem.addEventListener("click", () => {
+    let txt = elem.innerText;
+    if (txt == "MIX") {
+      elem.innerText = "MIXING";
+      player.Mixing(() => {
+        elem.innerText = "MIX";
+      });
+    } else {
+      window.alert("Mixing is running. please wait.");
     }
   });
 }
@@ -103,8 +119,8 @@ function initWindowEvent() {
     ReSize("mainframe");
   });
 
-  document.addEventListener("mouseup", () => {
-    player.OnMouseUp();
+  document.addEventListener("mouseup", (e) => {
+    player.OnMouseUp(e);
   });
   document.addEventListener("mousemove", (e) => {
     player.OnMouseMove(e);
