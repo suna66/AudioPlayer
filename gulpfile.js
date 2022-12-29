@@ -8,7 +8,7 @@ gulp.task('js' , (done) => {
   gulp.src([
         'node_modules/waveform-data/dist/waveform-data.min.js',
         'src/audiobuffer-to-wav/audiobuffer-to-wav.min.js',
-        'src/Constants.js',
+        'src/Common.js',
         'src/Element.js',
         'src/Button.js',
         'src/PlayButton.js',
@@ -33,7 +33,7 @@ gulp.task('debugjs' , (done) => {
   gulp.src([
         'node_modules/waveform-data/dist/waveform-data.min.js',
         'src/audiobuffer-to-wav/audiobuffer-to-wav.min.js',
-        'src/Constants.js',
+        'src/Common.js',
         'src/Element.js',
         'src/Button.js',
         'src/PlayButton.js',
