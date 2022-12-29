@@ -4,33 +4,8 @@ class StopButton extends Button {
   }
 
   Init(view, id, x, y, r, fill) {
-    let g = CreateSVGElem("g", id);
-    g.setAttribute("width", r);
-    g.setAttribute("height", r);
-    let path  = CreateRect(null, 0, 0, r, r, "none", fill);
-    g.appendChild(path);
-    g.addEventListener("click", this._onClick);
-    g.addEventListener("mousedown", this._onDefaultEvent);
-    g.addEventListener("mouseup", this._onDefaultEvent);
-    g.addEventListener("mousemove", this._onDefaultEvent);
-    g.addEventListener("mouseover", this._onDefaultEvent);
-    g.setAttribute("transform", `translate(${x}, ${y})`);
-    g.setAttribute("cursor", "pointer");
-    view.appendChild(g);
-    super.svg = g;
-    super.fill = fill;
-  }
-
-  _onClick(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    super.OnClickEvent(e);
-    return false;
-   }
-
-  _onDefaultEvent(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
+    super.Init(view, id, x, y, r, fill);
+    let path = CreateRect(null, r/2, r/2, r, r, "none", "red");
+    this.svg.appendChild(path);
   }
 }

@@ -195,8 +195,8 @@ class View {
 
     this.leftMoveBtn.Init(frame, "btnLeftMove", 0, height - r*2, r, "#CFCFCF", "<<");
     this.rightMoveBtn.Init(frame, "btnRightMove", width - r*2, height - r*2, r, "#CFCFCF", ">>");
-    this.playBtn.Init(frame, "btnPlayback", width/2, height - 2*r, r, "blue");
-    this.stopBtn.Init(frame, "btnStop", width/2, height - 2*r, 2*r, "red");
+    this.playBtn.Init(frame, "btnPlayback", width/2, height - 2*r, r, "#CFCFCF");
+    this.stopBtn.Init(frame, "btnStop", width/2, height - 2*r, r, "#CFCFCF");
     this.stopBtn.SetDisplay("none");
     const requestPlayEvent = () => {
       let ev = new Event("click");

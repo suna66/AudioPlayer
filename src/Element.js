@@ -123,7 +123,7 @@ function CreateCircle(id, cx, cy, r, stroke, fill) {
 function CreateLeftTriangle(id, x, y, r, stroke, fill) {
   const path = CreateSVGElem("path", id);
 
-  let line = `M${x-r} ${y-r} L${x+r} ${y} L${x-r} ${y+r} Z`;
+  let line = `M${x-r/2} ${y-r/2} L${x+r/2} ${y} L${x-r/2} ${y+r/2} Z`;
   path.setAttribute("d", line);
   if (stroke != null) {
     path.setAttribute("stroke", stroke);
