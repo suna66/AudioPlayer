@@ -2,9 +2,11 @@
 
 This app is music player using Web Audio API.
 
-You can arrange some audio files on grid lines and play them same time.
+You can arrange some audio files on grid lines, playback them same time, mixing them and download it.
 
-## screen shot
+Drop in your audio files and enjoy!
+
+## Screenshot
 
 ![](./screenshot/screenshot20221223.png)
 
