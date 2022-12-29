@@ -1,4 +1,4 @@
-# GridPlayer
+# AudioPlayer
 
 This app is music player using Web Audio API.
 
