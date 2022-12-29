@@ -50,12 +50,12 @@ function initStartAudioAction() {
   var elem = GetElem("startBtn");
   elem.addEventListener("click", () => {
     let txt = elem.innerText;
-    if (txt == "START") {
+    if (txt == "PLAY") {
       elem.innerText = "STOP";
       player.Start();
     }
     else {
-      elem.innerText = "START";
+      elem.innerText = "PLAY";
       player.Stop();
     }
   });

@@ -64,6 +64,7 @@ class SoundObject {
 
   CreateSVG() {
     this.svg = CreateWaveFormPath(this.wave, this.id, this.name, this.color_id);
+    this.svg.setAttribute("cursor", "pointer");
   }
 
   SetSelected(sw) {
@@ -188,11 +189,13 @@ class SoundObjectManager {
           offsety: rect.top,
         };
         obj.SetSelected(true);
+        SetCursorType(obj.svg, "grabbing");
         this.drag.targets.push(target);
       } else {
         if (this.drag.targets != null && this.drag.targets.length > 0) {
           this.drag.targets.map((obj) => {
             obj.target.SetSelected(false);
+            SetCursorType(obj.target.svg, "pointer");
           });
           this.ClearDragList();
         }
@@ -203,6 +206,7 @@ class SoundObjectManager {
           offsety: rect.top,
         };
         obj.SetSelected(true);
+        SetCursorType(obj.svg, "grabbing");
         this.drag.targets.push(target);
       }
     }
@@ -216,6 +220,11 @@ class SoundObjectManager {
 
   OnMouseUp() {
     this.drag.isMouseDown = false;
+    if (this.drag.targets != null) {
+      this.drag.targets.map((obj) => {
+        SetCursorType(obj.target.svg, "pointer");
+      });
+    }
   }
 
   AddSound(webAudio, array, name) {

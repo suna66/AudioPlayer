@@ -4,7 +4,6 @@ class Button {
     this.callback = null;
     this.fill = "#CFCFCF";
     this.pushColor = "#AF0000";
-    this.isPush = false;
   }
 
   Init(view, id, x, y, r, fill) {
@@ -19,9 +18,14 @@ class Button {
     g.addEventListener("mousemove", this._onDefaultEvent);
     g.addEventListener("mouseover", this._onDefaultEvent);
     g.setAttribute("transform", `translate(${x}, ${y})`);
+    g.setAttribute("cursor", "pointer");
     view.appendChild(g);
     this.svg = g;
     this.fill = fill;
+  }
+
+  SetDisplay(attr) {
+    this.svg.setAttribute("display", attr);
   }
 
   SetBackColor(color) {

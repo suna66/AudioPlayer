@@ -119,3 +119,21 @@ function CreateCircle(id, cx, cy, r, stroke, fill) {
 
   return circle;
 }
+
+function CreateLeftTriangle(id, x, y, r, stroke, fill) {
+  const path = CreateSVGElem("path", id);
+
+  let line = `M${x-r} ${y-r} L${x+r} ${y} L${x-r} ${y+r} Z`;
+  path.setAttribute("d", line);
+  if (stroke != null) {
+    path.setAttribute("stroke", stroke);
+  }
+  if (fill != null) {
+    path.setAttribute("fill", fill);
+  }
+  return path;
+}
+
+function SetCursorType(e, type) {
+  e.setAttribute("cursor", type);
+}

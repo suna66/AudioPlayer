@@ -19,6 +19,8 @@ class View {
     }
     this.leftMoveBtn = null;
     this.rightMoveBtn = null;
+    this.playBtn = null;
+    this.stopBtn = null;
     this.seekCallback = null;
   }
 
@@ -188,11 +190,19 @@ class View {
     let r = BUTTON_RADIUS;
     this.leftMoveBtn = new ImgButton();
     this.rightMoveBtn = new ImgButton();
+    this.playBtn = new PlayButton();
+    this.stopBtn = new StopButton();
 
-    //this.leftMoveBtn.Init(frame, "btnLeftMove", 0, height - r*2, r, "none", "#CFCFCF", "<<");
-    //this.rightMoveBtn.Init(frame, "btnRightMove", width - r*2, height - r*2, r, "none", "#CFCFCF", ">>");
     this.leftMoveBtn.Init(frame, "btnLeftMove", 0, height - r*2, r, "#CFCFCF", "<<");
     this.rightMoveBtn.Init(frame, "btnRightMove", width - r*2, height - r*2, r, "#CFCFCF", ">>");
+    this.playBtn.Init(frame, "btnPlayback", width/2, height - 2*r, r, "blue");
+    this.stopBtn.Init(frame, "btnStop", width/2, height - 2*r, 2*r, "red");
+    this.stopBtn.SetDisplay("none");
+    const requestPlayEvent = () => {
+      let ev = new Event("click");
+      let elem = GetElem("startBtn");
+      elem.dispatchEvent(ev);
+    };
 
     this.leftMoveBtn.SetClick((e) => {
       let pos = this.camera.x - this.measureSize;
@@ -205,12 +215,24 @@ class View {
       let pos = this.camera.x + this.measureSize;
       this.SetCamera(pos, this.camera.y);
     });
+    this.playBtn.SetClick((e) => {
+      this.playBtn.SetDisplay("none");
+      this.stopBtn.SetDisplay("inline");
+      requestPlayEvent();
+    });
+    this.stopBtn.SetClick((e) => {
+      this.stopBtn.SetDisplay("none");
+      this.playBtn.SetDisplay("inline");
+      requestPlayEvent();
+    });
   }
 
   resizeButton(width, height) {
     let r = BUTTON_RADIUS;
     this.leftMoveBtn.Move(0, height - r*2);
     this.rightMoveBtn.Move(width - r*2, height - r*2);
+    this.playBtn.Move(width/2, height - 2*r);
+    this.stopBtn.Move(width/2, height - 2*r);
   }
 
   createViewLine(group, width, height) {

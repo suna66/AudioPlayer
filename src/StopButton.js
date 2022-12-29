@@ -1,13 +1,13 @@
-class PlayButton extends Button {
+class StopButton extends Button {
   constructor() {
     super();
   }
 
   Init(view, id, x, y, r, fill) {
     let g = CreateSVGElem("g", id);
-    g.setAttribute("width", r*2);
-    g.setAttribute("height", r*2);
-    let path  = CreateLeftTriangle(null, r, r, r, "none", fill);
+    g.setAttribute("width", r);
+    g.setAttribute("height", r);
+    let path  = CreateRect(null, 0, 0, r, r, "none", fill);
     g.appendChild(path);
     g.addEventListener("click", this._onClick);
     g.addEventListener("mousedown", this._onDefaultEvent);
