@@ -20,6 +20,7 @@ function init() {
   initAudioAddAction(onAddEvent);
   initStartAudioAction();
   initMixAudioAction();
+  initMasterVolume();
 }
 
 function loadAudioFile(fileObj, callback)
@@ -74,6 +75,14 @@ function initMixAudioAction() {
       window.alert("Mixing is running. please wait.");
     }
   });
+}
+
+function initMasterVolume()
+{
+    var elem = GetElem("mastervol");
+    elem.addEventListener("input", () => {
+        player.ChangeMasterVol(elem.value);
+    });
 }
 
 function initView(id) {

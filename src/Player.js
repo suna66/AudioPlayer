@@ -40,6 +40,11 @@ class Player {
     }
   }
 
+  ChangeMasterVol = (value) => {
+    this.volume = value;
+    this.webAudio.mainGain.gain.value = this.volume;
+  }
+
   ChangeBpm = (value) => {
     this.bpm = value;
     this.view.SetBpmMeasure(this.bpm, this.widthParMeasure);
